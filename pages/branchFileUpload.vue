@@ -483,18 +483,19 @@
 }
 @keyframes slideIn {
   from {
-    transform: translateY(100%); 
-
+    transform: translateY(50%); /* Start from slightly below the screen */
+    opacity: 0; /* Start invisible */
   }
   to {
-    transform: translateY(0); 
-   
+    transform: translateY(0); /* End at its original position */
+    opacity: 1; /* End visible */
   }
 }
 
-
+/* Apply the animation to the card */
 .card-slide-in {
-  animation: slideIn 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; 
+  animation: slideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  /* Slightly slower and smoother easing for a more natural motion */
 }
 </style>
 <script setup lang ="ts">

@@ -1,9 +1,10 @@
 <template>
   <div class="bg-themeBaseColor h-screen overflow-hidden">
-    <div class="md:mx-auto md:w-[50%] md:py-12">
-      <div class="md:mx-20">
+<div class=" flex justify-center items-center content-center h-full">
+      <div class="">
         <div class="bg-white rounded-2xl md:p-10 sm:p-5 sm:mx-5 sm:my-10 md:shadow-2xl">
-          <div class="card-slide-in">
+          <div class="card-slide-in ">
+           
             <div class="">
               <div class="flex justify-start py-3">
                 <img src="public/images/logo.jpg" alt="Google" class="w-14 h-14" />
@@ -11,7 +12,7 @@
               </div>
               <h1 class="text-2xl font-semibold mb-2 text-bigtext">Enter Your Details</h1>
               <div>
-                <label class="block text-sm font-semibold text-bigtext mb-1">Mother's Name</label>
+                <label class="block text-sm font-semibold text-bigtext mb-1 ">Mother's Name</label>
                 <input
                   v-model="mName"
                   type="text"
@@ -37,7 +38,7 @@
               <div>
                 <button
                   type="submit"
-                  class="w-full bg-themeBaseColor text-white rounded-lg py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                  class="w-full bg-themeBaseColor text-white md:px-40 rounded-lg py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                   @click="completeAdhar"
                 >
                   Continue

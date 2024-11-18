@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-themeBaseColor h-screen overflow-hidden">
-    <div class="md:mx-auto md:w-[50%] md:py-12">
+ <div class="bg-themeBaseColor h-screen overflow-hidden">
+<div class=" flex justify-center items-center content-center h-full">
     <div class=" md:mx-20"  v-if="isAdhar">
     <div class="bg-white rounded-2xl md:p-10 sm:p-5 sm:mx-5 sm:my-10 md:shadow-2xl ">
         <div class="card-slide-in">
@@ -28,7 +28,7 @@
                 >Aadhaar Card</label
               >
               <div
-                class="border-2 border-dashed border-gray-300 rounded-lg px-6 py-4 my-5"
+                class="border-2 border-dashed border-gray-300 rounded-lg md:px-24 sm:px-6 py-4 my-5 "
                 :class="{ 'bg-gray-50': isDraggingAadhaar }"
                 @dragenter.prevent="isDraggingAadhaar = true"
                 @dragleave.prevent="isDraggingAadhaar = false"
@@ -183,7 +183,7 @@
                 >PAN Card</label
               >
               <div
-                class="border-2 border-dashed border-gray-300 rounded-lg px-6 py-4 my-5"
+                class="border-2 border-dashed border-gray-300 rounded-lg md:px-24 sm:px-6 py-4 my-5"
                 :class="{ 'bg-gray-50': isDraggingPan }"
                 @dragenter.prevent="isDraggingPan = true"
                 @dragleave.prevent="isDraggingPan = false"

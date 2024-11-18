@@ -1,7 +1,8 @@
 
 <template><div class="bg-themeBaseColor h-screen overflow-hidden">
-<div class="md:mx-auto md:w-[50%] md:py-12 ">
+<div class=" flex justify-center items-center content-center h-full">
  <!-- <OnBoardingSlider /> -->
+
  <LoginPage/>
 
 </div>

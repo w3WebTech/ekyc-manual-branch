@@ -95,7 +95,7 @@
           Enter OTP here
         </h1>
         <p class="text-smtext mb-8 pl-1">
-          We have sent an OTP to your email id <br />
+          We have sent an OTP to your email id 
           ******@gmail.com
         </p>
 
@@ -149,7 +149,7 @@
       </div>
     </div>
   </div>
-  <div v-else-if="EmailHandling" class=" md:mx-20">
+  <div v-else-if="EmailHandling" class="">
     <div class="bg-white rounded-2xl md:p-10 sm:p-5 sm:mx-5 sm:my-10 md:shadow-2xl">
       <div class="card-slide-in">
       <div class="flex flex-col  mx-1">
@@ -172,7 +172,7 @@
           Add your email
         </h2>
         <p class="text-smtext mb-6 pl-1">
-          This is where we'll send you important updates and insights on the
+          This is where we'll send you important updates and insights <br/>on the
           market.
         </p>
         <input
@@ -215,7 +215,7 @@
       </div>
     </div>
   </div>
-<div class="md:mx-20" v-else>
+<div class="" v-else>
     <div class="bg-white rounded-2xl md:p-10 sm:p-5 sm:mx-5 sm:my-10 md:shadow-2xl ">
    
       <div class="card-slide-in ">

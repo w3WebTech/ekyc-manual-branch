@@ -1,5 +1,5 @@
 
-<template><div class="bg-themeBaseColor h-screen overflow-hidden">
+<template><div class="bg-themeBaseColor max-h-screen overflow-hidden">
 <div class=" flex justify-center items-center content-center h-full">
  <!-- <OnBoardingSlider /> -->
 

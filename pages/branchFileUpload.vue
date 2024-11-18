@@ -1,5 +1,5 @@
 <template>
- <div class="bg-themeBaseColor min-h-screen overflow-hidden">
+ <div class="bg-themeBaseColor h-screen overflow-hidden">
 <div class=" flex justify-center items-center content-center h-full">
     <div class=" md:mx-20"  v-if="isAdhar">
     <div class="bg-white rounded-2xl md:p-10 sm:p-5 sm:mx-5 sm:my-10 md:shadow-2xl ">
@@ -28,7 +28,7 @@
                 >Aadhaar Card</label
               >
               <div
-                class="border-2 border-dashed border-gray-300 rounded-lg md:px-24 sm:px-6 py-4 my-5 "
+                class="border-2 border-dashed border-gray-300 rounded-lg md:px-24 sm:px-4 py-4 my-5 "
                 :class="{ 'bg-gray-50': isDraggingAadhaar }"
                 @dragenter.prevent="isDraggingAadhaar = true"
                 @dragleave.prevent="isDraggingAadhaar = false"
@@ -146,7 +146,7 @@
               <!-- :disabled="!isComplete" -->
               <button
                 type="submit"
-                class="w-full bg-themeBaseColor text-white rounded-lg py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                class="w-full bg-themeBaseColor px-24 text-white rounded-lg py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                 @click="completeAdhar"
               >
                 Continue
@@ -280,7 +280,7 @@
               <!-- :disabled="!isComplete" -->
               <button
                 type="submit"
-                class="w-full bg-themeBaseColor text-white rounded-lg py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                class="w-full bg-themeBaseColor px-24 text-white rounded-lg py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                 @click="nextStep"
               >
                 Continue

@@ -1,6 +1,6 @@
 
-<template><div class="bg-themeBaseColor min-h-screen overflow-hidden">
-<div class=" flex justify-center items-center content-center h-full">
+<template><div class="bg-themeBaseColor h-screen overflowY-hidden">
+<div class=" flex justify-center items-center content-center h-full ">
  <!-- <OnBoardingSlider /> -->
 
  <LoginPage/>

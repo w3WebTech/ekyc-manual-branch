@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-themeBaseColor max-h-screen overflow-hidden">
+  <div class="bg-themeBaseColor min-h-screen overflow-hidden">
 <div class=" flex justify-center items-center content-center h-full">
       <div class="">
         <div class="bg-white rounded-2xl md:p-10 sm:p-5 sm:mx-5 sm:my-10 md:shadow-2xl">

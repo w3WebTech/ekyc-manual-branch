@@ -84,9 +84,9 @@ video {
         <div class="w-100" style="display: flex; justify-content: center;">
           <div class="notes" style="border: 2px solid black; display: flex; justify-content: center; align-items: center; flex-direction: column;">
             <div class="w-100 bg-white mt-0" style="height: 50px;">
-              <p class="text-danger" id="distance_alert_message">{{ distanceAlertMessage }}</p>
+              <p class="text-danger">{{ distanceAlertMessage }}</p>
             </div>
-            <p>Distance Score: <span id="distance_score">{{ distanceScore }}</span><br>Alignment Score: <span id="al_score">{{ alignmentScore }}</span></p>
+            <p>Distance Score: <span>{{ distanceScore }}</span><br>Alignment Score: <span>{{ alignmentScore }}</span></p>
             <div class="w-100" style="border: 2px solid blue;">
               <div class="d-grid">
                 <button type="button" class="btn btn-primary" @click="captureImage" :disabled="captureDisabled">Capture</button>
@@ -102,17 +102,16 @@ video {
         </div>
       </div>
     </div>
-    <!-- Modal dialogs -->
-    <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="alertModalLabel">Notice</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">{{ modalMessage }}</div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Try again</button>
+
+    <!-- Tailwind CSS Modal -->
+    <div v-if="showModal" class="fixed inset-0 flex items-center justify-center z-50">
+      <div class="fixed inset-0 bg-black opacity-50"></div>
+      <div class="bg-white rounded-lg overflow-hidden shadow-lg z-10 max-w-sm w-full">
+        <div class="p-4">
+          <h2 class="text-lg font-semibold">Notice</h2>
+          <p class="mt-2">{{ modalMessage }}</p>
+          <div class="mt-4">
+            <button @click="showModal = false" class="bg-blue-500 text-white px-4 py-2 rounded">Try again</button>
           </div>
         </div>
       </div>
@@ -122,7 +121,6 @@ video {
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
-import * as tf from '@tensorflow/tfjs';
 import { FaceMesh } from '@mediapipe/face_mesh';
 import { Camera } from '@mediapipe/camera_utils';
 
@@ -138,14 +136,11 @@ export default defineComponent({
     const successMessage = ref<boolean>(false);
     const captureDisabled = ref<boolean>(true);
     const modalMessage = ref<string>('');
+    const showModal = ref<boolean>(false);
 
-    const showModal = (message: string) => {
+    const showModalDialog = (message: string) => {
       modalMessage.value = message;
-      const modalElement = document.getElementById('alertModal');
-      if (modalElement) {
-        const modal = new bootstrap.Modal(modalElement);
-        modal.show();
-      }
+      showModal.value = true;
     };
 
     const calculateAlignmentScore = (landmarks: any) => {
@@ -159,7 +154,7 @@ export default defineComponent({
     };
 
     const onResults = (results: any) => {
-      if (canvas.value && canvas .value.getContext) {
+      if (canvas.value && canvas.value.getContext) {
         canvasCtx.value = canvas.value.getContext('2d');
         canvasCtx.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
         canvasCtx.value.drawImage(results.image, 0, 0, canvas.value.width, canvas.value.height);
@@ -183,7 +178,7 @@ export default defineComponent({
             captureImage();
           }
         } else {
-          showModal('Multiple faces detected. Please show only one face.');
+          showModalDialog('Multiple faces detected. Please show only one face.');
         }
       }
     };
@@ -231,14 +226,14 @@ export default defineComponent({
           }
         } catch (error) {
           console.error("Error accessing the camera", error);
-          showModal("Unable to access the camera. Please check your permissions.");
+          showModalDialog("Unable to access the camera. Please check your permissions.");
         }
       } else {
-        showModal("getUser Media is not supported in this browser.");
+        showModalDialog("getUser  Media is not supported in this browser.");
       }
     });
 
-    return { video, canvas, distanceScore, alignmentScore, distanceAlertMessage, snapshot, successMessage, captureDisabled, modalMessage };
+    return { video, canvas, distanceScore, alignmentScore, distanceAlertMessage, snapshot, successMessage, captureDisabled, modalMessage, showModal };
   }
 });
 </script>

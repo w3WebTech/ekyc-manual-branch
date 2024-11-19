@@ -1,10 +1,11 @@
 <template>
   <div class="video-container">
-    <video ref="video" autoplay></video>
+    <video ref="video" autoplay playsinline></video>
   </div>
 </template>
 
 <script lang="ts">
+import { defineComponent, onMounted, ref } from 'vue';
 import * as tf from '@tensorflow/tfjs';
 import * as blazeface from '@tensorflow-models/blazeface';
 
@@ -15,18 +16,20 @@ export default defineComponent({
     onMounted(async () => {
       const model = await blazeface.load();
       if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true })
-          .then((stream) => {
-            if (video.value) {
-              video.value.srcObject = stream;
-              video.value.onloadedmetadata = () => {
-                detect(model);
-              };
-            }
-          })
-          .catch((error) => {
-            console.error("Error accessing the camera", error);
-          });
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          if (video.value) {
+            video.value.srcObject = stream;
+            video.value.onloadedmetadata = () => {
+              video.value.play(); // Ensure the video starts playing
+              detect(model);
+            };
+          }
+        } catch (error) {
+          console.error("Error accessing the camera", error);
+        }
+      } else {
+        console.error("getUser Media not supported on your browser!");
       }
     });
 
@@ -40,6 +43,7 @@ export default defineComponent({
           console.log("No faces detected.");
         }
 
+        // Request the next animation frame for continuous detection
         requestAnimationFrame(() => detect(model));
       }
     };
@@ -47,7 +51,6 @@ export default defineComponent({
     return { video };
   }
 });
-
 </script>
 
 <style scoped>

@@ -1,189 +1,172 @@
-<template>
-  <div v-if="showTruecaller" class="md:my-16 sm:my-20 md:mx-20">
-    <div>
-      <!-- Content -->
-      <div class="p-8 rounded-2xl md:shadow-2xl overflow-hidden bg-white">
-        <div class="grid grid-cols-2 py-6">
-          <img
-            src="public/images/goodwillname.jpg"
-            alt="Google"
-            class="w-45 h-14"
-          />
-          <!-- <div class=" inset-0 grid grid-cols-6 w-[100px] p-0 ">
-      <div v-for="i in 36" :key="i" class="border border-[rgba(72,52,129,0.1)]"></div>
-    </div> -->
-        </div>
-        <h1 class="text-bigtext text-2xl font-bold my-4 pl-1">
-          Enter OTP here
-        </h1>
-        <p class="text-smtext mb-8 pl-1">
-          We have sent an OTP to your mobile number<br />
-          +91 *****{{ form.phoneNumber.slice(-4) }}
-        </p>
-
-        <!-- OTP Input -->
-        <div class="flex gap-2 mb-8 mr-3">
-          <template v-for="(digit, index) in 6" :key="index">
-            <input
-              type="tel"
-              maxlength="1"
-              v-model="otpDigits[index]"
-              @input="handleOtpInput($event, index)"
-              @keydown.delete="handleBackspace($event, index)"
-              @keydown.left="focusPrevInput(index)"
-              @keydown.right="focusNextInput(index)"
-              class="md:w-[50px] md:h-[50px] sm:w-[40px] sm:h-[40px] border-2 border-gray-200 rounded-lg text-center text-xl font-semibold focus:border-[#1E1B4B] focus:outline-none"
-              :ref="(el) => (inputRefs[index] = el)"
+<!---<template>
+  <div class="md:mx-20">
+    <div
+      class="bg-white rounded-2xl md:p-10 sm:p-5 sm:mx-5 sm:my-10 md:shadow-2xl"
+    >
+      <div v-if="showTruecaller">
+        <div class="p-8 rounded-2xl md:shadow-2xl overflow-hidden bg-white">
+          <div class="grid grid-cols-2 py-6">
+            <img
+              src="public/images/goodwillname.jpg"
+              alt="Google"
+              class="w-45 h-14"
             />
-          </template>
-        </div>
+           
+          </div>
+          <h1 class="text-bigtext text-2xl font-bold my-4 pl-1">
+            Enter OTP here
+          </h1>
+          <p class="text-smtext mb-8 pl-1">
+            We have sent an OTP to your mobile number<br />
+            +91 *****{{ form.phoneNumber.slice(-4) }}
+          </p>
 
-        <!-- Timer -->
-        <div class="flex justify-between items-center mb-12">
-          <p class="text-mdtext">{{ formatTime(timer) }}</p>
-          <button
-            @click="resendOtp"
-            :disabled="timer > 0"
-            :class="timer > 0 ? 'text-gray-300' : 'text-red-500'"
-            class="font-medium"
-          >
-            Resend OTP
-          </button>
-        </div>
+        
+          <div class="flex gap-2 mb-8 mr-3">
+            <template v-for="(digit, index) in 6" :key="index">
+              <input
+                type="tel"
+                maxlength="1"
+                v-model="otpDigits[index]"
+                @input="handleOtpInput($event, index)"
+                @keydown.delete="handleBackspace($event, index)"
+                @keydown.left="focusPrevInput(index)"
+                @keydown.right="focusNextInput(index)"
+                class="md:w-[50px] md:h-[50px] sm:w-[40px] sm:h-[40px] border-2 border-gray-200 rounded-lg text-center text-xl font-semibold focus:border-[#1E1B4B] focus:outline-none"
+                :ref="(el) => (inputRefs[index] = el)"
+              />
+            </template>
+          </div>
 
-        <!-- Verify Button -->
-        <div class="sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:p-4 bg-white">
-          <div class="sm:w-full sm:mx-auto">
+     
+          <div class="flex justify-between items-center mb-12">
+            <p class="text-mdtext">{{ formatTime(timer) }}</p>
             <button
-              @click="verifyOtp"
-              :disabled="!isOtpComplete"
-              class="w-full py-3 rounded-lg font-medium transition-colors"
-              :class="
-                isOtpComplete
-                  ? 'bg-[#1E1B4B] text-white   '
-                  : 'bg-gray-200 text-white'
-              "
+              @click="resendOtp"
+              :disabled="timer > 0"
+              :class="timer > 0 ? 'text-gray-300' : 'text-red-500'"
+              class="font-medium"
             >
-              Verify OTP
+              Resend OTP
             </button>
+          </div>
+
+      
+          <div
+            class="sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:p-4 bg-white"
+          >
+            <div class="sm:w-full sm:mx-auto">
+              <button
+                @click="verifyOtp"
+                :disabled="!isOtpComplete"
+                class="w-full py-3 rounded-lg font-medium transition-colors"
+                :class="
+                  isOtpComplete
+                    ? 'bg-[#1E1B4B] text-white   '
+                    : 'bg-gray-200 text-white'
+                "
+              >
+                Verify OTP
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  
-  <div class=" md:mx-20" v-else-if="showEmailOtp" >
-    <div class="bg-white rounded-2xl md:p-10 sm:p-5 sm:mx-5 sm:my-10 md:shadow-2xl ">
-      <!-- Content -->
-      <div class="card-slide-in ">
-         <div class="flex justify-start py-3">
-           <img
-          src="public/images/logo.jpg"
-          alt="Google"
-          class="w-14 h-14"
-        />
-        <img
-          src="public/images/goodwillname.jpg"
-          alt="Google"
-          class="w-45 h-14 mx-2"
-        />
-        <!-- <div class=" inset-0 grid grid-cols-6 w-[100px] p-0 ">
-      <div v-for="i in 36" :key="i" class="border border-[rgba(72,52,129,0.1)]"></div>
-    </div> -->
-      </div>
-        <h1 class="text-bigtext text-2xl font-bold my-4 pl-1">
-          Enter OTP here
-        </h1>
-        <p class="text-smtext mb-8 pl-1">
-          We have sent an OTP to your email id 
-          ******@gmail.com
-        </p>
-
-        <!-- OTP Input -->
-        <div class="flex gap-2 mb-8 mr-3">
-          <template v-for="(digit, index) in 6" :key="index">
-            <input
-              type="tel"
-              maxlength="1"
-              v-model="otpDigits1[index]"
-              @input="handleOtpInput1($event, index)"
-              @keydown.delete="handleBackspace1($event, index)"
-              @keydown.left="focusPrevInput1(index)"
-              @keydown.right="focusNextInput1(index)"
-              class="md:w-[50px] md:h-[50px] sm:w-[40px] sm:h-[40px] border border-gray-200 rounded-lg text-center text-xl font-semibold focus:border-themeBaseColor focus:outline-none"
-              :ref="(el) => (inputRefs1[index] = el)"
+      <div v-else-if="showEmailOtp">
+        <div class="card-slide-in">
+          <div class="flex justify-start py-3">
+            <img src="public/images/logo.jpg" alt="Google" class="w-14 h-14" />
+            <img
+              src="public/images/goodwillname.jpg"
+              alt="Google"
+              class="w-45 h-14 mx-2"
             />
-          </template>
-        </div>
+            
+          </div>
+          <h1 class="text-bigtext text-2xl font-bold my-4 pl-1">
+            Enter OTP here
+          </h1>
+          <p class="text-smtext mb-8 pl-1">
+            We have sent an OTP to your email id ******@gmail.com
+          </p>
 
-        <!-- Timer -->
-        <div class="flex justify-between items-center mb-12">
-          <p class="text-mdtext">{{ formatTime(timer1) }}</p>
-          <button
-            @click="resendOtp1"
-            :disabled="timer1 > 0"
-            :class="timer1 > 0 ? 'text-gray-300' : 'text-red-500'"
-            class="font-medium"
-          >
-            Resend OTP
-          </button>
-        </div>
+       
+          <div class="flex gap-2 mb-8 mr-3">
+            <template v-for="(digit, index) in 6" :key="index">
+              <input
+                type="tel"
+                maxlength="1"
+                v-model="otpDigits1[index]"
+                @input="handleOtpInput1($event, index)"
+                @keydown.delete="handleBackspace1($event, index)"
+                @keydown.left="focusPrevInput1(index)"
+                @keydown.right="focusNextInput1(index)"
+                class="md:w-[50px] md:h-[50px] sm:w-[40px] sm:h-[40px] border border-gray-200 rounded-lg text-center text-xl font-semibold focus:border-themeBaseColor focus:outline-none"
+                :ref="(el) => (inputRefs1[index] = el)"
+              />
+            </template>
+          </div>
 
-        <!-- Verify Button -->
-        <!-- <div class="sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:p-4 bg-white">
-          <div class="sm:w-full sm:mx-auto"> -->
+      
+          <div class="flex justify-between items-center mb-12">
+            <p class="text-mdtext">{{ formatTime(timer1) }}</p>
             <button
-              @click="verifyOtpforEmail"
-              :disabled="!isOtpComplete1"
-              class="w-full py-3 rounded-lg font-medium transition-colors"
-              :class="
-                isOtpComplete1
-                  ? 'bg-themeBaseColor text-white  '
-                  : 'bg-gray-200 text-white'
-              "
+              @click="resendOtp1"
+              :disabled="timer1 > 0"
+              :class="timer1 > 0 ? 'text-gray-300' : 'text-red-500'"
+              class="font-medium"
             >
-              Verify OTP
+              Resend OTP
             </button>
-          <!-- </div>
-        </div> -->
+          </div>
+
+         
+          <button
+            @click="verifyOtpforEmail"
+            :disabled="!isOtpComplete1"
+            class="w-full py-3 rounded-lg font-medium transition-colors"
+            :class="
+              isOtpComplete1
+                ? 'bg-themeBaseColor text-white  '
+                : 'bg-gray-200 text-white'
+            "
+          >
+            Verify OTP
+          </button>
+        
+        </div>
       </div>
-    </div>
-  </div>
-  <div v-else-if="EmailHandling" class="">
-    <div class="bg-white rounded-2xl md:p-10 sm:p-5 sm:mx-5 sm:my-10 md:shadow-2xl">
-      <div class="card-slide-in">
-      <div class="flex flex-col  mx-1">
-        <div class="flex justify-start py-3">
-           <img
-          src="public/images/logo.jpg"
-          alt="Google"
-          class="w-14 h-14"
-        />
-        <img
-          src="public/images/goodwillname.jpg"
-          alt="Google"
-          class="w-45 h-14 mx-2"
-        />
-        <!-- <div class=" inset-0 grid grid-cols-6 w-[100px] p-0 ">
-      <div v-for="i in 36" :key="i" class="border border-[rgba(72,52,129,0.1)]"></div>
-    </div> -->
-      </div>
-        <h2 class="text-2xl font-bold mb-4 pl-1 text-bigtext">
-          Add your email
-        </h2>
-        <p class="text-smtext mb-6 pl-1">
-          This is where we'll send you important updates and insights <br/>on the
-          market.
-        </p>
-        <input
-          v-model="email"
-          type="email"
-          id="email"
-          placeholder="Enter email"
-          class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:bg-blue-50 focus:border-themeBaseColor mb-6"
-        />
-        <!-- <div class="sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:p-4 bg-white">
-          <div class="sm:w-full sm:mx-auto"> -->
+      <div v-else-if="EmailHandling">
+        <div class="card-slide-in">
+          <div class="flex flex-col mx-1">
+            <div class="flex justify-start py-3">
+              <img
+                src="public/images/logo.jpg"
+                alt="Google"
+                class="w-14 h-14"
+              />
+              <img
+                src="public/images/goodwillname.jpg"
+                alt="Google"
+                class="w-45 h-14 mx-2"
+              />
+           
+            </div>
+            <h2 class="text-2xl font-bold mb-4 pl-1 text-bigtext">
+              Add your email
+            </h2>
+            <p class="text-smtext mb-6 pl-1">
+              This is where we'll send you important updates and insights
+              <br />on the market.
+            </p>
+            <input
+              v-model="email"
+              type="email"
+              id="email"
+              placeholder="Enter email"
+              class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:bg-blue-50 focus:border-themeBaseColor mb-6"
+            />
+    
             <button
               @click="handleDone(email)"
               :disabled="!email"
@@ -197,9 +180,8 @@
               Verify email
             </button>
             <p class="text-mdtext mt-2 text-center">or</p>
-             <!--@click="openVerifygoogle = true"-->
+         
             <button
-             
               class="bg-themeBaseColor text-white py-2 px-4 inline-flex items-center justify-center focus:outline-none focus:shadow-outline mt-4 w-full rounded-lg font-medium transition-colors"
             >
               <img
@@ -209,89 +191,83 @@
               />
               <span>Continue with Google</span>
             </button>
-          <!-- </div>
-        </div> -->
-      </div>
-      </div>
-    </div>
-  </div>
-<div class="" v-else>
-    <div class="bg-white rounded-2xl md:p-10 sm:p-5 sm:mx-5 sm:my-10 md:shadow-2xl ">
-   
-      <div class="card-slide-in ">
-      <div class="flex justify-start py-3">
-           <img
-          src="public/images/logo.jpg"
-          alt="Google"
-          class="w-14 h-14"
-        />
-        <img
-          src="public/images/goodwillname.jpg"
-          alt="Google"
-          class="w-45 h-14 mx-2"
-        />
-        <!-- <div class=" inset-0 grid grid-cols-6 w-[100px] p-0 ">
-      <div v-for="i in 36" :key="i" class="border border-[rgba(72,52,129,0.1)]"></div>
-    </div> -->
-      </div>
-
-      <h2 class="text-bigtext text-3xl font-bold mb-4 pl-1">
-        Ready to get started?
-      </h2>
-      <p class="text-smtext mb-8 pl-1">
-        Enter your number to help us set up your investment account.
-      </p>
-
-      <div class="flex gap-4 mb-8">
-        <div class="bg-gray-100 px-4 py-3 rounded-lg">
-          <span class="text-mdtext">+91</span>
+        
+          </div>
         </div>
-        <input
-          type="tel"
-          id="phoneNumber"
-          v-model="form.phoneNumber"
-          class="bg-gray-50 border border-gray-300 text-mdtext text-sm rounded-lg focus:border-themeBaseColor focus:bg-blue-50 block w-full p-2.5"
-          placeholder="Enter phone number"
-          required
-          pattern="\d{10}"
-          @input="validatePhoneNumber"
-          maxlength="10"
-        />
       </div>
-
-      <div class="flex items-center gap-3 mb-2">
-        <button
-          class="w-6 h-6 rounded-md flex items-center justify-center cursor-pointer"
-          :class="whatsAppEnabled ? 'bg-themeBaseColor' : 'bg-gray-200'"
-          @click="toggleWhatsApp"
-        >
-          <svg
-            v-if="whatsAppEnabled"
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 text-white"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
+      <div v-else>
+        <div class="card-slide-in">
+          <div class="flex justify-start py-3">
+            <img src="public/images/logo.jpg" alt="Google" class="w-14 h-14" />
+            <img
+              src="public/images/goodwillname.jpg"
+              alt="Google"
+              class="w-45 h-14 mx-2"
             />
-          </svg>
-        </button>
-        <span class="text-smtext">Enable WhatsApp notifications</span>
-      </div>
-      <p class="text-center text-mdtext font-semibold text-sm py-4">
-        Have an account ?
-        <span class="text-themeBaseColor font-semibold">Login</span>
-      </p>
-      <p class="text-center text-smtext text-sm mb-8">
-        By proceeding, you accept Ventura's
-        <a href="#" class="text-themeBaseColor font-semibold">Terms of Use</a> and
-        <a href="#" class="text-themeBaseColor font-semibold">Privacy Policy</a>
-      </p>
-      <!-- <div class="sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:p-4 bg-white">
-        <div class="sm:w-full sm:mx-auto"> -->
+          
+          </div>
+
+          <h2 class="text-bigtext text-3xl font-bold mb-4 pl-1">
+            Ready to get started?
+          </h2>
+          <p class="text-smtext mb-8 pl-1">
+            Enter your number to help us set up your investment account.
+          </p>
+
+          <div class="flex gap-4 mb-8">
+            <div class="bg-gray-100 px-4 py-3 rounded-lg">
+              <span class="text-mdtext">+91</span>
+            </div>
+            <input
+              type="tel"
+              id="phoneNumber"
+              v-model="form.phoneNumber"
+              class="bg-gray-50 border border-gray-300 text-mdtext text-sm rounded-lg focus:border-themeBaseColor focus:bg-blue-50 block w-full p-2.5"
+              placeholder="Enter phone number"
+              required
+              pattern="\d{10}"
+              @input="validatePhoneNumber"
+              maxlength="10"
+            />
+          </div>
+
+          <div class="flex items-center gap-3 mb-2">
+            <button
+              class="w-6 h-6 rounded-md flex items-center justify-center cursor-pointer"
+              :class="whatsAppEnabled ? 'bg-themeBaseColor' : 'bg-gray-200'"
+              @click="toggleWhatsApp"
+            >
+              <svg
+                v-if="whatsAppEnabled"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 text-white"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+            <span class="text-smtext">Enable WhatsApp notifications</span>
+          </div>
+          <p class="text-center text-mdtext font-semibold text-sm py-4">
+            Have an account ?
+            <span class="text-themeBaseColor font-semibold">Login</span>
+          </p>
+          <p class="text-center text-smtext text-sm mb-8">
+            By proceeding, you accept Ventura's
+            <a href="#" class="text-themeBaseColor font-semibold"
+              >Terms of Use</a
+            >
+            and
+            <a href="#" class="text-themeBaseColor font-semibold"
+              >Privacy Policy</a
+            >
+          </p>
+         
           <button
             @click="handleContinue"
             class="w-full bg-themeBaseColor text-white py-3 rounded-lg font-medium"
@@ -304,27 +280,19 @@
           >
             Continue
           </button>
-        <!-- </div>
-      </div> -->
-    </div>
+        
+        </div>
+      </div>
     </div>
   </div>
+
   <div
     class="relative z-10"
     aria-labelledby="modal-title"
     role="dialog"
     aria-modal="true"
   >
-    <!--
-    Background backdrop, show/hide based on modal state.
-
-    Entering: "ease-out duration-300"
-      From: "opacity-0"
-      To: "opacity-100"
-    Leaving: "ease-in duration-200"
-      From: "opacity-100"
-      To: "opacity-0"
-  -->
+   
     <div
       class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
       aria-hidden="true"
@@ -338,16 +306,7 @@
       <div
         class="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0"
       >
-        <!--
-        Modal panel, show/hide based on modal state.
-
-        Entering: "ease-out duration-300"
-          From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          To: "opacity-100 translate-y-0 sm:scale-100"
-        Leaving: "ease-in duration-200"
-          From: "opacity-100 translate-y-0 sm:scale-100"
-          To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-      -->
+    
         <div
           class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
         >
@@ -389,7 +348,7 @@
       </div>
     </div>
   </div>
-</template>
+</template>-->
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 
@@ -659,47 +618,311 @@ onMounted(() => {
 });
 </script>
 <style scoped lang="scss">
-@keyframes shake {
-  0% {
-    transform: translate(1px, 0);
-  }
-  25% {
-    transform: translate(-1px, 0);
-  }
-  50% {
-    transform: translate(1px, 0);
-  }
-  75% {
-    transform: translate(-1px, 0);
-  }
-  100% {
-    transform: translate(0, 0);
-  }
-}
-
-@media (min-width: 768px) {
-  /* md breakpoint in Tailwind CSS */
-  .hover\:shake:hover {
-    animation: shake 0.5s ease-in-out;
-  }
-}
 @keyframes slideIn {
   from {
-    transform: translateY(50%); /* Start from slightly below the screen */
-    opacity: 0; /* Start invisible */
+    transform: translateY(10px); /* Slightly adjust the starting position */
+    opacity: 0;
   }
   to {
-    transform: translateY(0); /* End at its original position */
-    opacity: 1; /* End visible */
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
-/* Apply the animation to the card */
 .card-slide-in {
   animation: slideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  /* Slightly slower and smoother easing for a more natural motion */
+  min-height: 400px; /* Set a minimum height */
 }
-
-
-
 </style>
+
+
+
+
+
+<template>
+  <div class="bg-themeBaseColor h-screen overflow-y-hidden">
+    <div class="flex justify-center items-center h-full">
+      <div class="md:mx-20 sm:w-full">
+        <div class="bg-white rounded-2xl md:p-10 sm:p-5 sm:mx-5 sm:my-10 md:shadow-2xl">
+          <!-- Conditional rendering based on state -->
+          <div v-if="showTruecaller">
+            <div class="p-8 rounded-2xl bg-white">
+              <div class="grid grid-cols-2 py-6">
+                <img src="public/images/goodwillname.jpg" alt="Google" class="w-45 h-14" />
+              </div>
+              <h1 class="text-bigtext text-2xl font-bold my-4 pl-1">Enter OTP here</h1>
+              <p class="text-smtext mb-8 pl-1">
+                We have sent an OTP to your mobile number<br />
+                +91 *****{{ form.phoneNumber.slice(-4) }}
+              </p>
+
+              <!-- OTP Input -->
+              <div class="flex gap-2 mb-8 mr-3">
+                <template v-for="(digit, index) in 6" :key="index">
+                  <input
+                    type="tel"
+                    maxlength="1"
+                    v-model="otpDigits[index]"
+                    @input="handleOtpInput($event, index)"
+                    @keydown.delete="handleBackspace($event, index)"
+                    class="w-12 h-12 border-2 border-gray-200 rounded-lg text-center text-xl font-semibold focus:border-[#1E1B4B] focus:outline-none"
+                    :ref="(el) => (inputRefs[index] = el)"
+                  />
+                </template>
+              </div>
+
+              <!-- Timer and Verify Button -->
+              <div class="flex justify-between items-center mb-12">
+                <p class="text-mdtext">{{ formatTime(timer) }}</p>
+                <button
+                  @click="resendOtp"
+                  :disabled="timer > 0"
+                  class="font-medium"
+                  :class="timer > 0 ? 'text-gray-300' : 'text-red-500'"
+                >
+                  Resend OTP
+                </button>
+              </div>
+
+              <div class="sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:p-4 bg-white">
+                <button
+                  @click="verifyOtp"
+                  :disabled="!isOtpComplete"
+                  class="w-full py-3 rounded-lg font-medium transition-colors"
+                  :class="isOtpComplete ? 'bg-[#1E1B4B] text-white' : 'bg-gray-200 text-white'"
+                >
+                  Verify OTP
+                </button>
+              </div>
+            </div>
+          </div>
+            <div v-else-if="showEmailOtp">
+        <div class="card-slide-in">
+          <div class="flex justify-start py-3">
+            <img src="public/images/logo.jpg" alt="Google" class="w-14 h-14" />
+            <img
+              src="public/images/goodwillname.jpg"
+              alt="Google"
+              class="w-45 h-14 mx-2"
+            />
+            <!-- <div class=" inset-0 grid grid-cols-6 w-[100px] p-0 ">
+      <div v-for="i in 36" :key="i" class="border border-[rgba(72,52,129,0.1)]"></div>
+    </div> -->
+          </div>
+          <h1 class="text-bigtext text-2xl font-bold my-4 pl-1">
+            Enter OTP here
+          </h1>
+          <p class="text-smtext mb-8 pl-1">
+            We have sent an OTP to your email id ******@gmail.com
+          </p>
+
+          <!-- OTP Input -->
+          <div class="flex gap-2 mb-8 mr-3">
+            <template v-for="(digit, index) in 6" :key="index">
+              <input
+                type="tel"
+                maxlength="1"
+                v-model="otpDigits1[index]"
+                @input="handleOtpInput1($event, index)"
+                @keydown.delete="handleBackspace1($event, index)"
+                @keydown.left="focusPrevInput1(index)"
+                @keydown.right="focusNextInput1(index)"
+                class="md:w-[50px] md:h-[50px] sm:w-[40px] sm:h-[40px] border border-gray-200 rounded-lg text-center text-xl font-semibold focus:border-themeBaseColor focus:outline-none"
+                :ref="(el) => (inputRefs1[index] = el)"
+              />
+            </template>
+          </div>
+
+          <!-- Timer -->
+          <div class="flex justify-between items-center mb-12">
+            <p class="text-mdtext">{{ formatTime(timer1) }}</p>
+            <button
+              @click="resendOtp1"
+              :disabled="timer1 > 0"
+              :class="timer1 > 0 ? 'text-gray-300' : 'text-red-500'"
+              class="font-medium"
+            >
+              Resend OTP
+            </button>
+          </div>
+
+          <!-- Verify Button -->
+          <!-- <div class="sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:p-4 bg-white">
+          <div class="sm:w-full sm:mx-auto"> -->
+          <button
+            @click="verifyOtpforEmail"
+            :disabled="!isOtpComplete1"
+            class="w-full py-3 rounded-lg font-medium transition-colors"
+            :class="
+              isOtpComplete1
+                ? 'bg-themeBaseColor text-white  '
+                : 'bg-gray-200 text-white'
+            "
+          >
+            Verify OTP
+          </button>
+          <!-- </div>
+        </div> -->
+        </div>
+      </div>
+      <div v-else-if="EmailHandling">
+        <div class="card-slide-in">
+          <div class="flex flex-col mx-1">
+            <div class="flex justify-start py-3">
+              <img
+                src="public/images/logo.jpg"
+                alt="Google"
+                class="w-14 h-14"
+              />
+              <img
+                src="public/images/goodwillname.jpg"
+                alt="Google"
+                class="w-45 h-14 mx-2"
+              />
+              <!-- <div class=" inset-0 grid grid-cols-6 w-[100px] p-0 ">
+      <div v-for="i in 36" :key="i" class="border border-[rgba(72,52,129,0.1)]"></div>
+    </div> -->
+            </div>
+            <h2 class="text-2xl font-bold mb-4 pl-1 text-bigtext">
+              Add your email
+            </h2>
+            <p class="text-smtext mb-6 pl-1">
+              This is where we'll send you important updates and insights
+              <br />on the market.
+            </p>
+            <input
+              v-model="email"
+              type="email"
+              id="email"
+              placeholder="Enter email"
+              class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:bg-blue-50 focus:border-themeBaseColor mb-6"
+            />
+            <!-- <div class="sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:p-4 bg-white">
+          <div class="sm:w-full sm:mx-auto"> -->
+            <button
+              @click="handleDone(email)"
+              :disabled="!email"
+              class="w-full py-3 rounded-lg font-medium transition-colors mt-5"
+              :class="
+                isValidEmail(email)
+                  ? 'bg-themeBaseColor text-white  '
+                  : 'bg-gray-200 text-white'
+              "
+            >
+              Verify email
+            </button>
+            <p class="text-mdtext mt-2 text-center">or</p>
+            <!--@click="openVerifygoogle = true"-->
+            <button
+              class="bg-themeBaseColor text-white py-2 px-4 inline-flex items-center justify-center focus:outline-none focus:shadow-outline mt-4 w-full rounded-lg font-medium transition-colors"
+            >
+              <img
+                src="public/images/google-editted.png"
+                alt="Google"
+                class="w-8 h-8 mx-3"
+              />
+              <span>Continue with Google</span>
+            </button>
+            <!-- </div>
+        </div> -->
+          </div>
+        </div>
+      </div>
+      <div v-else>
+        <div class="card-slide-in">
+          <div class="flex justify-start py-3">
+            <img src="public/images/logo.jpg" alt="Google" class="w-14 h-14" />
+            <img
+              src="public/images/goodwillname.jpg"
+              alt="Google"
+              class="w-45 h-14 mx-2"
+            />
+            <!-- <div class=" inset-0 grid grid-cols-6 w-[100px] p-0 ">
+      <div v-for="i in 36" :key="i" class="border border-[rgba(72,52,129,0.1)]"></div>
+    </div> -->
+          </div>
+
+          <h2 class="text-bigtext text-3xl font-bold mb-4 pl-1">
+            Ready to get started?
+          </h2>
+          <p class="text-smtext mb-8 pl-1">
+            Enter your number to help us set up your investment account.
+          </p>
+
+          <div class="flex gap-4 mb-8">
+            <div class="bg-gray-100 px-4 py-3 rounded-lg">
+              <span class="text-mdtext">+91</span>
+            </div>
+            <input
+              type="tel"
+              id="phoneNumber"
+              v-model="form.phoneNumber"
+              class="bg-gray-50 border border-gray-300 text-mdtext text-sm rounded-lg focus:border-themeBaseColor focus:bg-blue-50 block w-full p-2.5"
+              placeholder="Enter phone number"
+              required
+              pattern="\d{10}"
+              @input="validatePhoneNumber"
+              maxlength="10"
+            />
+          </div>
+
+          <div class="flex items-center gap-3 mb-2">
+            <button
+              class="w-6 h-6 rounded-md flex items-center justify-center cursor-pointer"
+              :class="whatsAppEnabled ? 'bg-themeBaseColor' : 'bg-gray-200'"
+              @click="toggleWhatsApp"
+            >
+              <svg
+                v-if="whatsAppEnabled"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 text-white"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+            <span class="text-smtext">Enable WhatsApp notifications</span>
+          </div>
+          <p class="text-center text-mdtext font-semibold text-sm py-4">
+            Have an account ?
+            <span class="text-themeBaseColor font-semibold">Login</span>
+          </p>
+          <p class="text-center text-smtext text-sm mb-8">
+            By proceeding, you accept Ventura's
+            <a href="#" class="text-themeBaseColor font-semibold"
+              >Terms of Use</a
+            >
+            and
+            <a href="#" class="text-themeBaseColor font-semibold"
+              >Privacy Policy</a
+            >
+          </p>
+          <!-- <div class="sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:p-4 bg-white">
+        <div class="sm:w-full sm:mx-auto"> -->
+          <button
+            @click="handleContinue"
+            class="w-full bg-themeBaseColor text-white py-3 rounded-lg font-medium"
+            :disabled="!form.phoneNumber && form.phoneNumber.length != 10"
+            :class="
+              form.phoneNumber && form.phoneNumber.length == 10
+                ? 'bg-[#1E1B4B] text-white  '
+                : 'bg-gray-200 text-gray-500'
+            "
+          >
+            Continue
+          </button>
+          <!-- </div>
+      </div> -->
+        </div>
+      </div>
+          <!-- Additional conditional rendering for other states -->
+        </div>
+      </div>
+    </div>
+ </div>
+</template>

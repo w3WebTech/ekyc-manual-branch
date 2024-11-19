@@ -13,25 +13,32 @@ export default defineComponent({
   setup() {
     const video = ref<HTMLVideoElement | null>(null);
 
-    onMounted(async () => {
-      const model = await blazeface.load();
-      if (navigator.mediaDevices.getUserMedia) {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-          if (video.value) {
-            video.value.srcObject = stream;
-            video.value.onloadedmetadata = () => {
-              video.value.play(); // Ensure the video starts playing
-              detect(model);
-            };
-          }
-        } catch (error) {
-          console.error("Error accessing the camera", error);
-        }
+onMounted(async () => {
+  const model = await blazeface.load();
+  console.log("Model loaded");
+  if (navigator.mediaDevices.getUserMedia) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (video.value) {
+        video.value.srcObject = stream;
+    video.value.onloadedmetadata = () => {
+  video.value.play().catch(error => {
+   alert("Error playing video:", error);
+  });
+  detect(model);
+};
+
       } else {
-        console.error("getUser Media not supported on your browser!");
+        console.error("Video element is null");
       }
-    });
+    } catch (error) {
+      console.error("Error accessing the camera", error);
+    }
+  } else {
+    console.error("getUser Media not supported on your browser!");
+  }
+});
+
 
     const detect = async (model: blazeface.BlazeFaceModel) => {
       if (video.value) {
@@ -54,6 +61,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
 .video-container {
   width: 100%;
   height: 100%;
@@ -61,5 +69,6 @@ export default defineComponent({
 video {
   width: 100%;
   height: 100%;
+  background-color: black; /* Ensure there's a background color */
 }
 </style>

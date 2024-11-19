@@ -90,36 +90,46 @@ export default {
     const secondModalMessage = ref("");
     const thirdModalMessage = ref("");
 
-    onMounted(() => {
-      if (process.client) {
-        // Use nextTick to ensure the DOM is fully rendered
-        nextTick(() => {
-          canvasCtx.value = canvasElement.value.getContext("2d");
+   onMounted(() => {
+  if (process.client) {
+    nextTick(() => {
+      canvasCtx.value = canvasElement.value.getContext("2d");
 
-          const faceMesh = new FaceMesh({
-            locateFile: (file) =>
-              `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
-          });
+      const faceMesh = new FaceMesh({
+        locateFile: (file) =>
+          `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
+      });
 
-          faceMesh.setOptions({
-            maxNumFaces: 2,
-            refineLandmarks: true,
-            minDetectionConfidence: 0.5,
-            minTrackingConfidence: 0.5,
-          });
+      faceMesh.setOptions({
+        maxNumFaces: 2,
+        refineLandmarks: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5,
+      });
 
-          faceMesh.onResults(onResults);
+      faceMesh.onResults(onResults);
 
-          const camera = new Camera(videoElement.value, {
-            onFrame: async () =>
-              await faceMesh.send({ image: videoElement.value }),
-            width: 300,
-            height: 300,
-          });
-          camera.start();
+      // Ensure the video element is not null
+      if (videoElement.value) {
+        const camera = new Camera(videoElement.value, {
+          onFrame: async () => {
+            await faceMesh.send({ image: videoElement.value });
+          },
+          width: 300,
+          height: 300,
         });
+
+        camera.start().then(() => {
+          console.log("Camera started successfully");
+        }).catch(err => {
+          console.error("Error starting camera:", err);
+        });
+      } else {
+        console.error("Video element is not available");
       }
     });
+  }
+});
 
     const onResults = (results) => {
       if (imageCaptured) return;
@@ -249,6 +259,7 @@ export default {
 }
 video,
 canvas {
+   display: block; 
   position: absolute;
   top: 0;
   left: 0;
@@ -256,4 +267,5 @@ canvas {
   height: 100%;
   object-fit: cover;
 }
+
 </style>

@@ -13,32 +13,31 @@ export default defineComponent({
   setup() {
     const video = ref<HTMLVideoElement | null>(null);
 
-onMounted(async () => {
-  const model = await blazeface.load();
-  console.log("Model loaded");
-  if (navigator.mediaDevices.getUserMedia) {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      if (video.value) {
-        video.value.srcObject = stream;
-    video.value.onloadedmetadata = () => {
-  video.value.play().catch(error => {
-   alert("Error playing video:", error);
-  });
-  detect(model);
-};
-
+    onMounted(async () => {
+      const model = await blazeface.load();
+      if (navigator.mediaDevices.getUserMedia) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          if (video.value) {
+            video.value.srcObject = stream;
+            video.value.onloadedmetadata = () => {
+              if (video.value) {
+                video.value.play().catch(error => {
+                  console.error("Error playing video:", error);
+                });
+                detect(model);
+              }
+            };
+          } else {
+            console.error("Video element is null after stream assignment");
+          }
+        } catch (error) {
+          console.error("Error accessing the camera", error);
+        }
       } else {
-        console.error("Video element is null");
+        console.error("getUser Media not supported on your browser!");
       }
-    } catch (error) {
-      console.error("Error accessing the camera", error);
-    }
-  } else {
-    console.error("getUser Media not supported on your browser!");
-  }
-});
-
+    });
 
     const detect = async (model: blazeface.BlazeFaceModel) => {
       if (video.value) {
@@ -50,8 +49,9 @@ onMounted(async () => {
           console.log("No faces detected.");
         }
 
-        // Request the next animation frame for continuous detection
         requestAnimationFrame(() => detect(model));
+      } else {
+        console.error("Video element is null during detection");
       }
     };
 
@@ -61,7 +61,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-
 .video-container {
   width: 100%;
   height: 100%;
@@ -69,6 +68,6 @@ onMounted(async () => {
 video {
   width: 100%;
   height: 100%;
-  background-color: black; /* Ensure there's a background color */
+  background-color: black;
 }
 </style>

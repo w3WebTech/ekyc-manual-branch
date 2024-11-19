@@ -1,6 +1,6 @@
-<template>
+<!--<template>
   <div class="video-container">
-    <video ref="video" autoplay playsinline></video>
+    <video ref="video" autoplay height="300" width="300"></video>
   </div>
 </template>
 
@@ -69,5 +69,63 @@ video {
   width: 100%;
   height: 100%;
   background-color: black;
+}
+</style> -->
+<template>
+  <div class="video-container">
+    <video ref="video" autoplay playsinline></video>
+    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, onMounted, ref } from 'vue';
+
+export default defineComponent({
+  setup() {
+    const video = ref<HTMLVideoElement | null>(null);
+    const errorMessage = ref<string | null>(null);
+
+    onMounted(async () => {
+      // Check if getUserMedia is supported
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        try {
+          // Request access to the camera
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          if (video.value) {
+            video.value.srcObject = stream; // Set the video source to the stream
+            video.value.onloadedmetadata = () => {
+              video.value.play(); // Start playing the video
+            };
+          }
+        } catch (error) {
+          // Handle errors (e.g., user denied access)
+          console.error("Error accessing the camera", error);
+          errorMessage.value = "Unable to access the camera. Please check your permissions.";
+        }
+      } else {
+        errorMessage.value = "getUserMedia is not supported in this browser.";
+      }
+    });
+
+    return { video, errorMessage };
+  }
+});
+</script>
+
+<style scoped>
+.video-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.error {
+  color: red;
+  text-align: center;
 }
 </style>

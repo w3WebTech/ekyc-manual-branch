@@ -84,64 +84,65 @@ export default {
     const videoElement = ref(null);
     const canvasElement = ref(null);
     const canvasCtx = ref(null);
-    const successMessage = ref(false);
-    const isCaptureDisabled = ref(true);
-    const modalMessage = ref("");
-    const secondModalMessage = ref("");
-    const thirdModalMessage = ref("");
+    const alScoreDisplay = ref(null);
+    const snapshot = ref(null);
+    const successmsg = ref(null);
+    const captureButton = ref(null);
+    const distancemessage = ref(null);
+    const distanceScoreDisplay = ref(null);
+    let imageCaptured = false;
 
-   onMounted(() => {
-  if (process.client) {
-    nextTick(() => {
-      canvasCtx.value = canvasElement.value.getContext("2d");
+    onMounted(() => {
+      nextTick(() => {
+        // Initialize canvas context after the DOM has been updated
+        canvasCtx.value = canvasElement.value.getContext("2d");
 
-      const faceMesh = new FaceMesh({
-        locateFile: (file) =>
-          `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
-      });
-
-      faceMesh.setOptions({
-        maxNumFaces: 2,
-        refineLandmarks: true,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5,
-      });
-
-      faceMesh.onResults(onResults);
-
-      // Ensure the video element is not null
-      if (videoElement.value) {
-        const camera = new Camera(videoElement.value, {
-          onFrame: async () => {
-            await faceMesh.send({ image: videoElement.value });
-          },
-          width: 300,
-          height: 300,
+        const faceMesh = new FaceMesh({
+          locateFile: (file) =>
+            `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
         });
 
-        camera.start().then(() => {
-          console.log("Camera started successfully");
-        }).catch(err => {
-          console.error("Error starting camera:", err);
+        faceMesh.setOptions({
+          maxNumFaces: 2,
+          refineLandmarks: true,
+          minDetectionConfidence: 0.5,
+          minTrackingConfidence: 0.5,
         });
-      } else {
-        console.error("Video element is not available");
-      }
+
+        faceMesh.onResults(onResults);
+
+        // Ensure the video element is not null
+        if (videoElement.value) {
+          const camera = new Camera(videoElement.value, {
+            onFrame: async () => {
+              await faceMesh.send({ image: videoElement.value });
+            },
+            width: 300,
+            height: 300,
+          });
+
+          camera.start().then(() => {
+            console.log("Camera started successfully");
+          }).catch(err => {
+            console.error("Error starting camera:", err);
+          });
+        } else {
+          console.error("Video element is not available");
+        }
+      });
     });
-  }
-});
 
     const onResults = (results) => {
       if (imageCaptured) return;
 
-      canvasCtx.save();
-      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-      canvasCtx.drawImage(
+      canvasCtx.value.save();
+      canvasCtx.value.clearRect(0, 0, canvasElement.value.width, canvasElement.value.height);
+      canvasCtx.value.drawImage(
         results.image,
         0,
         0,
-        canvasElement.width,
-        canvasElement.height
+        canvasElement.value.width,
+        canvasElement.value.height
       );
 
       const numFaces = results.multiFaceLandmarks
@@ -149,7 +150,7 @@ export default {
         : 0;
 
       const dis_sc = parseInt(
-        distance_score.innerText.match(/\d+/)?.[0] || "0"
+        distanceScoreDisplay.value.innerText.match(/\d+/)?.[0] || "0"
       );
 
       if (numFaces === 1) {
@@ -161,20 +162,19 @@ export default {
           faceSize,
           faceSizeThreshold
         );
-        const distanceScoreDisplay = document.getElementById("distance_score");
-        distanceScoreDisplay.innerText = `${distanceScore}%`;
+        distanceScoreDisplay.value.innerText = `${distanceScore}%`;
 
         if (distanceScore < 90) {
-          distancemessage.innerHTML = `Your face is too far from the camera. <br> Please move closer.`;
-          captureButton.disabled = true;
+          distancemessage.value.innerHTML = `Your face is too far from the camera. <br> Please move closer.`;
+          captureButton.value.disabled = true;
           return;
         } else if (distanceScore > 90) {
-          distancemessage.innerHTML = " ";
-          captureButton.disabled = false;
+          distancemessage.value.innerHTML = " ";
+          captureButton.value.disabled = false;
         }
 
         const alignmentScore = calculateAlignmentScore(landmarks);
-        alScoreDisplay.innerText = `${alignmentScore}%`;
+        alScoreDisplay.value.innerText = `${alignmentScore}%`;
 
         if (alignmentScore >= 85) {
           // Check if eyes are open
@@ -185,61 +185,21 @@ export default {
           if (alignmentScore === 100) {
             captureImage();
             imageCaptured = true;
-            captureButton.disabled = true;
+            captureButton.value.disabled = true;
           }
 
           detectPupilAndEstimateGaze(landmarks);
-          drawFaceOvalLines(canvasCtx, landmarks);
-        } else {
-          captureButton.disabled = true; // Disable the capture button if alignment score is below 70%
-        }
-      }
-
-      //  Then, check if there are multiple faces detected
-      if (dis_sc >= 90 && numFaces > 1) {
-        showModalMessage("Multiple faces detected. Please show only one face.");
-        return;
-      }
-
-      canvasCtx.restore();
-    };
-
-    const captureImage = () => {
-      const snapshotCanvas = document.createElement("canvas");
-      snapshotCanvas.width = canvasElement.width;
-      snapshotCanvas.height = canvasElement.height;
-      const snapshotCtx = snapshotCanvas.getContext("2d");
-      snapshotCtx.drawImage(
-        videoElement,
-        0,
-        0,
-        snapshotCanvas.width,
-        snapshotCanvas.height
-      );
-      const globalBase64Value = snapshotCanvas.toDataURL("image/png");
-      snapshot.src = globalBase64Value;
-      snapshot.style.display = "block";
-      successmsg.style.display = "block";
-
-      captureButton.disabled = true;
-      // const alignmentScore = parseInt(alScoreDisplay.innerText.split(':')[1].trim().replace('%', ''));
-      check_data(globalBase64Value);
-      videoElement.pause();
-    };
-
-    return {
-      videoElement,
-      canvasElement,
-      canvasCtx,
-      successMessage,
-      isCaptureDisabled,
-      modalMessage,
-      secondModalMessage,
-      thirdModalMessage,
-      captureImage,
-    };
-  },
-};
+         
+onMounted(() => {
+  nextTick(() => {
+    if (canvasElement.value) {
+      canvasCtx.value = canvasElement.value.getContext("2d");
+      // Rest of your code here
+    } else {
+      console.error("Canvas element is not available");
+    }
+  });
+});}}}}}
 </script>
 
 <style scoped>

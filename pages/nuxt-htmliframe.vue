@@ -1,7 +1,7 @@
 <template>
   <div class="iframe-container">
     <iframe
-      src="https://e-kyc-v.vercel.app/new.html"
+      src="https://e-kyc-v.vercel.app/iframe.html"
       width="100%"
       height="600"
       frameborder="0"

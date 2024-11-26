@@ -596,6 +596,7 @@ const animaSuccess = () => {
   setBankDetails.value = false;
   bankDetailsSuccess.value = true;
 };
+
 const completeBankDetails = () => {
   router.push("/UploadFile");
 };

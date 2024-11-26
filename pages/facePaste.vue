@@ -1,3 +1,27 @@
+
+<!---<template><div class="bg-themeBaseColor h-screen overflowY-hidden">
+<div class=" flex justify-center items-center content-center h-full ">
+
+
+ <LoginPage/>
+
+</div>
+
+          </div>
+</template>
+
+<script lang="ts">
+import OnBoardingSlider from '@/components/OnBoardingSlider.vue'; // Use alias @ to point to the components directory
+import SliderForDesktop from '@/components/SliderForDesktop.vue';
+import LoginPage from '@/components/LoginPage.vue';
+export default {
+  components: {
+    OnBoardingSlider,
+    SliderForDesktop,
+    LoginPage
+  }
+}
+</script>-->
 <template>
   <div class="container mx-auto text-center p-4">
     <h1 class="text-2xl font-bold text-red-600">Face Liveness</h1>

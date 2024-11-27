@@ -12,7 +12,7 @@
 
 <style scoped>
 .iframe-container {
-  /* Optional: Add some styling to the iframe container */
+
   overflow: hidden;
   border: 1px solid #ccc;
   border-radius: 8px;

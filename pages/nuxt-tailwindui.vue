@@ -145,6 +145,7 @@
                 </div>
                 <div v-else-if="apiSuccess">
                   <p class="mt-6">{{ apidata }}</p>
+
                 </div>
                 <div v-else>
                   <p class="mt-6 text-red-500">
@@ -170,18 +171,19 @@ export default {
       apiCalled: false,
       apiSuccess: false,
       apidata: null,
-      progress: 0, // New property for progress
+      progress: 0, 
+      
     };
   },
   methods: {
     async VerifyAccount() {
       this.apiCalled = true;
-      this.progress = 0; // Reset progress
+      this.progress = 0; 
       const apiUrl =
-        "https://phpstack-529375-5021731.cloudwaysapps.com/api/bank-verification.php";
-      const formData = new URLSearchParams();
-      formData.append("bankAccNo", this.accountNumber);
-      formData.append("ifsc", this.ifscCode);
+        `https://ifsc.razorpay.com/${this.ifscCode}`;
+      // const formData = new URLSearchParams();
+      // formData.append("bankAccNo", this.accountNumber);
+      // formData.append("ifsc", this.ifscCode);
 
       // Simulate progress updates
       const updateProgress = (percentage) => {
@@ -193,7 +195,7 @@ export default {
       setTimeout(() => updateProgress(75), 20); // Update to 75% after 2 seconds
 
       try {
-        const response = await axios.post(apiUrl, formData);
+        const response = await axios.get(apiUrl);
         if (response && response.data) {
           updateProgress(100);
           this.apidata = response.data;

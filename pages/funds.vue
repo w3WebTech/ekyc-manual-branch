@@ -12,13 +12,7 @@
 </template>
 
 <script>
-import MobileFund from '../components/mobile-fund.vue'; // Adjust the path as necessary
 
-export default {
-  components: {
-    MobileFund
-  }
-}
 </script>
 
 <style scoped>
